@@ -8,8 +8,8 @@ class TodolistFormController extends Controller
 {
     public function index()
     {
-        $todos=Todo::orderBy('id','asc')->get();
-        return view('todo_list', ["todos"=>$todos]);
+        $todos=Todo::latest('id')->get();
+        return view('todo.list'['todos'=$todos]);
     }
     public function createPage()
     {
@@ -18,27 +18,29 @@ class TodolistFormController extends Controller
     public function create(Request $request)
     {
         $todo =new Todo();
+        $todo ->title=$request->input('title');
+        $todo ->content=$request->inout('content');
+        $todo->priority=$request->input('priority');
         $todo->task_date= $request->task_date;
         $todo->task_name= $request->task_name;
+        $todo->save();
+        return redirect()->route('todo.show',['todo'=>$todos]);
 
     }
-    public function editPage($id)
+    public function edit(int $id)
     {
-        $todos=Todo::find($id);
         return view('todo_edit',["todo"=>$todo]);
     }
-    public function edit(Request $request)
+    public function update(Save Todo $request,int $id)
     {
-        Todo::find($request->id)->update([
-            'task_date' =>$request->task_date,
-            'task_name' =>$request->task_name,
-        ]);
-        return redirect('/');
-    }
-    public function delete(Request $id)
+        $todo->title=$request=input('title');
+        $todo->content=$request->input('content');
+        $target->priority=$request->input('priority');
+        $todo->save();
+    public function confirm(int $id)
     {
-        Todo::find($id)->delete();
-        return redirect('/');
+        Todo->delete();
+        return redirect()->route('todo.index');
     }
 }
 
